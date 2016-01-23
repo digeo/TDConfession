@@ -23,6 +23,9 @@
 	
 	<context:component-scan base-package="nl.rug.tdconfession" />
 	
+	<!-- 	imports -->
+    <beans:import resource="servlet-controller.xml" />
+    <beans:import resource="spring-transaction.xml" />
 	
 	
 </beans:beans>
