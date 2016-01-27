@@ -26,6 +26,7 @@ import nl.rug.tdconfession.service.ConfessionService;
 @Controller
 public class ConfessionController {
 
+	private static final String REDIRECT_HOME = "redirect:/";
 	private static final String RIGHT_CONFESSIONS = "rightConfessions";
 	private static final String LEFT_CONFESSIONS = "leftConfessions";
 	private ConfessionService confessionService;
@@ -38,33 +39,27 @@ public class ConfessionController {
 		model.addAttribute(RIGHT_CONFESSIONS, rightConfessions(confessionList));
 		return "home";
 	}
-	
+
 	@RequestMapping(value = "/thumbsUp/{id}", method = RequestMethod.GET)
-	public String thumbsUp(@PathVariable(value="id") int id, Model model) {
+	public String thumbsUp(@PathVariable(value="id") int id) {
 		Confession confession = confessionService.findById(id);
 		confession.setPossitiveVotes(confession.getPossitiveVotes() + 1);
 		confessionService.update(confession);
-		
-		List<Confession> confessionList = confessionService.findAll();
-		model.addAttribute(LEFT_CONFESSIONS, leftConfessions(confessionList));
-		model.addAttribute(RIGHT_CONFESSIONS, rightConfessions(confessionList));
-		return "home";
+
+		return REDIRECT_HOME;
 	}
-	
+
 	@RequestMapping(value = "/thumbsDown/{id}", method = RequestMethod.GET)
-	public String thumbsDown(@PathVariable(value="id") int id, Model model) {
+	public String thumbsDown(@PathVariable(value="id") int id) {
 		Confession confession = confessionService.findById(id);
 		confession.setNegativeVotes(confession.getNegativeVotes() + 1);
 		confessionService.update(confession);
-		
-		List<Confession> confessionList = confessionService.findAll();
-		model.addAttribute(LEFT_CONFESSIONS, leftConfessions(confessionList));
-		model.addAttribute(RIGHT_CONFESSIONS, rightConfessions(confessionList));
-		return "home";
+
+		return REDIRECT_HOME;
 	}
-	
+
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String createConfession(Locale locale, Model model, @RequestParam(value="confessionText") String confessionText) {		
+	public String createConfession(Locale locale, @RequestParam(value="confessionText") String confessionText) {		
 		Confession confession = new Confession();
 		confession.setConfessionText(confessionText);
 		confession.setLocale(locale.toString());
@@ -72,11 +67,8 @@ public class ConfessionController {
 		confession.setNegativeVotes(0);
 		confession.setPosted(new Date());
 		confessionService.insert(confession);
-		
-		List<Confession> confessionList = confessionService.findAll();
-		model.addAttribute(LEFT_CONFESSIONS, leftConfessions(confessionList));
-		model.addAttribute(RIGHT_CONFESSIONS, rightConfessions(confessionList));
-		return "home";
+
+		return REDIRECT_HOME;
 	}
 
 	@Autowired(required=true)
